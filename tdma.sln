@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6989167D-11E4-40FE-8C1A-2192A86A7E90}") = "tdma", "tdma.vfproj", "{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Debug|x64.ActiveCfg = Debug|x64
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Debug|x64.Build.0 = Debug|x64
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Debug|x86.ActiveCfg = Debug|Win32
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Debug|x86.Build.0 = Debug|Win32
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Release|x64.ActiveCfg = Release|x64
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Release|x64.Build.0 = Release|x64
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Release|x86.ActiveCfg = Release|Win32
+		{6E35140D-2D11-4E6C-B2BA-B2FFE5B0581B}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A0F3FF3-C821-4032-B965-EE04A7622FE1}
+	EndGlobalSection
+EndGlobal
