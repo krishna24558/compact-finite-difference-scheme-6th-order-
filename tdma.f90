@@ -20,19 +20,27 @@
     call compact_fd6(n, f, df_num , h )
     
     error = abs(df_num - df_exact)
-    error_percent = 100.0_dp*error / abs(df_exact) 
+    
+    do i = 1, n
+   if (abs(df_exact(i)) < tiny(1.0_dp)) then
+    error_percent(i) = 0.0_dp  ! Avoid division by zero
+  else
+    error_percent(i) = 100.0_dp * error(i) / abs(df_exact(i))
+  end if
+end do
+    
     
     open(unit=10 , file='results.txt' , status='replace')
     write(10 , '(A)') 'x, f(x) , df_exact(x) , df_num(x) , error , error_percent'
     do i=1,n 
-        write(10 , '(6F16.8)') x(i) , f(i) , df_exact(i) , df_num(i) , error(i) , error_percent(i)
+        write(10 , '(6E16.8)') x(i) , f(i) , df_exact(i) , df_num(i) , error(i) , error_percent(i)
     end do 
     
     close(10)
     
     print * , 'results written to results.txt'
     print *, 'maximum error:' , maxval(error)
-    print * , 'maximum error percentage:' , maxval(error_percent)
+    !print * , 'maximum error percentage:' , maxval(error_percent)
     
     
     contains 
@@ -42,14 +50,15 @@
     
     implicit none 
     integer , intent(in) :: n 
-    integer :: i
+    integer :: i ,nt
     real(dp) :: alpha , beta , gamma
     real(dp) , allocatable :: a(:) , b(:) , c(:) , d(:) 
     real(dp) , intent(in) :: h
     real(dp) , intent(out) , dimension(n) :: df_num
+    real(dp) , dimension(n-4) :: df_num_sub
     real(dp) , intent(in) , dimension(n) :: f 
     
- 
+    nt = n-4
     !coefficients for interior points 
     alpha = 1.0_dp/3.0_dp
     beta = 14.0_dp/18.0_dp
@@ -67,22 +76,24 @@ df_num(n-1) = (3.0_dp*f(n) + 10.0_dp*f(n-1) - 18.0_dp*f(n-2) + 6.0_dp*f(n-3) - 1
 df_num(n) = (25.0_dp*f(n) - 48.0_dp*f(n-1) + 36.0_dp*f(n-2) - 16.0_dp*f(n-3) + 3.0_dp*f(n-4)) / (12.0_dp*h)
    
 ! allocate arrays for tridiagonal matrix(i=3,n-2) and rhs
-    allocate(a(n-5) , b(n-4) , c(n-5) , d(n-4) ) 
+    allocate(a(nt-1) , b(nt) , c(nt-1) , d(nt) ) 
     
     ! initialize tri diagonal matrix and rhs(d)
     
     a(:) = alpha
     b(:) = 1.0_dp
     c(:) = alpha
-    d(:) = 0.0_dp
     
-    do i=3,n-2
-        d(i-2) = (beta*(f(i+1) - f(i-1)) + gamma*(f(i+2) - f(i-2)))/h
+    
+    do i=1,nt
+        d(i) = (beta*(f(i+3) - f(i+1)) + gamma*(f(i+4) - f(i)))/h
     end do 
 
-call tdma(a, b, c, d, df_num(3:n-2), nt = n-4 )
+call tdma(a, b, c, d, df_num_sub, nt)
+!copying result back to original array 
+df_num(3:n-2) = df_num_sub
 
-deallocate(a , b , c , d )
+deallocate(a , b , c , d)
 end subroutine compact_fd6
 
 subroutine tdma(a , b, c ,d , x , nt)
@@ -95,16 +106,23 @@ real(dp) , intent(in) :: a(nt-1) , b(nt) ,c(nt-1) , d(nt)
 real(dp) , intent(out) :: x(nt)
 real(dp) , dimension(nt) :: e, f
 real(dp) :: t
+
+   
     
     !forward sweep
     e(1) = c(1)/b(1)
     f(1) = d(1)/b(1)
     
-    do i = 2, nt
-        t = b(i) - a(i)*e(i-1)
+    
+    do i = 2, nt-1
+        t = b(i) - a(i-1)*e(i-1)
         e(i) = c(i)/t
         f(i) = (d(i)-a(i)*f(i-1))/t
     end do 
+    
+    !explicitly calculating for i=nt(to skip unnecesaary calculations for e(nt))
+    t = b(nt) - a(nt-1)*e(nt-1)
+    f(nt) = (d(nt) - a(nt-1)*f(nt-1))/t
     
     !backward sweep 
     
