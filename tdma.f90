@@ -3,7 +3,7 @@
     
     integer , parameter :: dp = selected_real_kind(15) !
     integer :: i                        !loop indices
-    integer , parameter :: n = 101      ! no of grid points
+    integer , parameter :: n = 51   ! no of grid points
     real(dp) :: h                        !grid spacing 
     real(dp) , parameter :: pi = 4.0_dp*atan(1.0_dp)
     real(dp) , dimension(n) :: x , f , df_exact , df_num , error , error_percent! arrays for storing grid , function, derivatives
@@ -31,9 +31,9 @@ end do
     
     
     open(unit=10 , file='results.txt' , status='replace')
-    write(10 , '(A)') 'x, f(x) , df_exact(x) , df_num(x) , error , error_percent'
+    write(10 , '(A)') 'x, f(x) , df_exact(x) , df_num(x) , error '
     do i=1,n 
-        write(10 , '(6E16.8)') x(i) , f(i) , df_exact(i) , df_num(i) , error(i) , error_percent(i)
+        write(10 , '(6E16.8)') x(i) , f(i) , df_exact(i) , df_num(i) , error(i) 
     end do 
     
     close(10)
